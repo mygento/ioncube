@@ -23,8 +23,9 @@ class ClassesScanner extends \Magento\Setup\Module\Di\Code\Reader\ClassesScanner
         }
 
         //XXX
-        if (is_file($path . DIRECTORY_SEPARATOR . 'classmap.csv')) {
-            $data = file_get_contents($path . DIRECTORY_SEPARATOR . 'classmap.csv');
+        $etcPath = $path.DIRECTORY_SEPARATOR.'etc'.DIRECTORY_SEPARATOR;
+        if (is_file($etcPath.'classmap.csv')) {
+            $data = file_get_contents($etcPath. 'classmap.csv');
             if ($data !== false) {
                 return explode(':', trim($data));
             }

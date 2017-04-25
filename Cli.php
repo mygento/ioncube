@@ -13,6 +13,7 @@ class Cli {
     );
 
     $classes = [];
+    $precompile = [];
     foreach ($recursiveIterator as $fileItem) {
         /** @var $fileItem \SplFileInfo */
         if ($fileItem->isDir() || $fileItem->getExtension() !== 'php' || preg_match('/vendor/', $fileItem->getRealPath())) {
@@ -22,14 +23,14 @@ class Cli {
         $classNames = $fileScanner->getClassNames();
         foreach ($classNames as $className) {
             $class = new \ReflectionClass($className);
-            $classes[$className] = [];
+            $classes[] = $className;
             $constructor = $class->getConstructor();
             if(!$constructor || $constructor->class !== $className) {
               continue;
             }
 
             foreach ($constructor->getParameters() as $parameter) {
-              $classes[$className][] = [
+              $precompile[$className][] = [
                   $parameter->getName(),
                   $this->getClassName($parameter) !== null ? $this->getClassName($parameter) : null,
                   !$parameter->isOptional(),
@@ -40,6 +41,12 @@ class Cli {
             }
         }
     }
+    $etcPath = $path.DIRECTORY_SEPARATOR.'etc'.DIRECTORY_SEPARATOR;
+    file_put_contents($etcPath.'classmap.csv', implode(':', $classes));
+    if(!count(array_keys($precompile))) {
+      return;
+    }
+    file_put_contents($etcPath.'deps.json', json_encode($precompile));
   }
 
 

@@ -13,13 +13,16 @@ class ClassesScanner extends \Magento\Setup\Module\Di\Code\Reader\ClassesScanner
      * @param string $path
      * @return array
      * @throws FileSystemException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getList($path)
     {
         $realPath = realpath($path);
         if (!(bool)$realPath) {
-            throw new FileSystemException(new \Magento\Framework\Phrase('Invalid path: %1',
-                [$path]));
+            throw new FileSystemException(new \Magento\Framework\Phrase(
+                'Invalid path: %1',
+                [$path]
+            ));
         }
 
         //XXX
